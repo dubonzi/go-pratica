@@ -24,7 +24,7 @@ func main() {
 
 	r.Get("/{id}", hello)
 	r.Get("/", todos)
-	c := make(chan dado, 100)
+	c := make(chan dado)
 	prepararDados(c)
 
 	for d := range c {
@@ -63,6 +63,8 @@ func prepararDados(c chan dado) {
 			c <- d
 		}(i)
 	}
-	wg.Wait()
-	close(c)
+	go func() {
+		wg.Wait()
+		close(c)
+	}()
 }
